@@ -4,7 +4,8 @@ import re
 import subprocess
 from django.core.management.base import BaseCommand
 
-class Command(BaseCommand):
+
+class DjamalCommand(BaseCommand):
     help = 'Manage custom Django commands'
 
     def add_arguments(self, parser):
@@ -12,43 +13,31 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         command = options['command']
-        if command in {'add_alias', 'init', 'cleanup', 'push_env', 'deploy', 'setup', 'audit'}:
-            getattr(self, command)()
+        if command == 'add_alias':
+            self.add_alias()
+        elif command in ['init', 'cleanup', 'push_env', 'deploy', 'setup', 'audit']:
+            self.execute_djamal_command_if_alias_exists(command)
 
     def add_alias(self):
         alias_command = "alias djamal=\"docker run -it --rm -v '${PWD}:/workdir' -e SSH_AUTH_SOCK='/run/host-services/ssh-auth.sock' -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/basecamp/kamal:latest\""
         env_file_path = self.get_env_file_path()
         with open(env_file_path, 'a') as env_file:
             env_file.write(alias_command)
-        self.stdout.write(self.style.SUCCESS('Alias command added to the environmental file successfully.'))
+        self.stdout.write(self.style.SUCCESS('Alias command added to the environmental file successfully.')
 
-    def execute_djamal_command(self, djamal_command, command_string):
-        current_directory = os.getcwd()
-        djamal_command = djamal_command.replace('${PWD}', current_directory)
-        subprocess.run(f'{djamal_command} {command_string}', shell=True)
-
-    def init(self):
-        self.execute_djamal_command_if_alias_exists('init')
-
-    def push_env(self):
-        self.execute_djamal_command_if_alias_exists('env push')
-        self.stdout.write(self.style.SUCCESS('Env files have been successfully pushed to the servers.'))
-
-    def deploy(self):
-        self.execute_djamal_command_if_alias_exists('env push')
-        self.execute_djamal_command_if_alias_exists('deploy')
-        self.stdout.write(self.style.SUCCESS('Application successfully deployed to remote servers.'))
-
-    def setup(self):
-        self.execute_djamal_command_if_alias_exists('setup')
-        self.stdout.write(self.style.SUCCESS('Application successfully setup and deployed to remote servers.'))
-
-    def cleanup(self):
-        self.execute_djamal_command_if_alias_exists('remove')
-        self.stdout.write(self.style.SUCCESS('Application, including Traefik, containers, images, and registry session have been removed.'))
-
-    def audit(self):
-        self.execute_djamal_command_if_alias_exists('audit')
+    def execute_djamal_command_if_alias_exists(self, command_string):
+        env_file_path = self.get_env_file_path()
+        with open(env_file_path, 'r') as env_file:
+            content = env_file.read()
+            alias_pattern = re.compile(r"alias\s+djamal\s*=\s*\"([^\"]+)\"")
+            match = alias_pattern.search(content)
+            if match:
+                djamal_command = match.group(1)
+                current_directory = os.getcwd()
+                djamal_command = djamal_command.replace('${PWD}', current_directory)
+                subprocess.run(f'{djamal_command} {command_string}', shell=True)
+            else:
+                self.stdout.write('djamal alias command not found in the environment file.')
 
     def get_env_file_path(self):
         current_directory = os.path.dirname(os.path.abspath(__file__))
