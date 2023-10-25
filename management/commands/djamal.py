@@ -4,7 +4,7 @@ import re
 import subprocess
 from django.core.management.base import BaseCommand
 
-class DjamalCommand(BaseCommand):
+class Command(BaseCommand):
     help = 'Manage custom Django commands'
 
     def add_arguments(self, parser):
