@@ -19,14 +19,13 @@ class Command(BaseCommand):
             self.execute_djamal_command_if_alias_exists(command)
 
     def add_alias(self):
-        #alias_command = "alias djamal=\"docker run -it --rm -v '${PWD}:/workdir' -v /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock -e SSH_AUTH_SOCK='/run/host-services/ssh-auth.sock' -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/basecamp/kamal:latest\""
         alias_command = (
-            "alias djamal=\"docker run -it --rm "
+            'alias djamal="docker run -it --rm '
             "-v '${PWD}:/workdir' "
             f"-v $(echo $SSH_AUTH_SOCK):/ssh-agent "
             "-e SSH_AUTH_SOCK=/ssh-agent "
             "-v /var/run/docker.sock:/var/run/docker.sock "
-            "ghcr.io/basecamp/kamal:latest\"\n"
+            'ghcr.io/basecamp/kamal:latest"\n'
         )
         env_file_path = self.get_env_file_path()
         with open(env_file_path, "a") as env_file:
