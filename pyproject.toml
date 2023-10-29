@@ -7,7 +7,7 @@ name = "djamal"
 version = "0.1.1"
 description = "A Django extension to deploy web apps anywhere, from bare metal to cloud VMs."
 authors = ["Ehigie (Pystar) Aito <aitoehigie@gmail.com>"]
-readme = "djamal/README.md"
+readme = "README.md"
 repository = "https://github.com/aitoehigie/djamal"
 classifiers = [
     "Development Status :: 3 - Alpha",
