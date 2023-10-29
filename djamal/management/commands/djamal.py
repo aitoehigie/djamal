@@ -12,42 +12,19 @@ class Command(BaseCommand):
     help = "Djamal commands"
 
     def add_arguments(self, parser):
-        parser.add_argument("command", type=str, help="Specify the command to execute")
+        parser.add_argument("command", nargs="+", type=str, help="Specify the command to execute")
 
     def handle(self, *args, **options):
-        command = options["command"]
+        command_list = options["command"]
+        command = command_list.pop(0)
         if command == "add_alias":
             self.add_alias()
         elif command == "help":
             self.print_help_text()
         elif command == "version":
             self.print_version()
-        elif command in [
-            "init",
-            "cleanup",
-            "push_env",
-            "deploy",
-            "setup",
-            "audit",
-            "accessory",
-            "app",
-            "build",
-            "config",
-            "details",
-            "env",
-            "envify",
-            "healthcheck",
-            "lock",
-            "prune",
-            "redeploy",
-            "registry",
-            "remove",
-            "rollback",
-            "server",
-            "setup",
-            "traefik",
-        ]:
-            self.execute_djamal_command_if_alias_exists(command)
+        else:
+            self.execute_djamal_command_if_alias_exists(command, command_list)
 
     def add_alias(self):
         alias_command = (
@@ -62,21 +39,27 @@ class Command(BaseCommand):
         with open(env_file_path, "a") as env_file:
             env_file.write(alias_command)
 
-    def execute_djamal_command_if_alias_exists(self, command_string):
+    def execute_djamal_command_if_alias_exists(self, djamal_command, optional_args):
+        full_command = self.construct_full_command(djamal_command, optional_args)
+        subprocess.run(full_command, shell=True)
+
+    def construct_full_command(self, djamal_command, optional_args):
         env_file_path = self.get_env_file_path()
         with open(env_file_path, "r") as env_file:
             content = env_file.read()
             alias_pattern = re.compile(r"alias\s+djamal\s*=\s*\"([^\"]+)\"")
             match = alias_pattern.search(content)
             if match:
-                djamal_command = match.group(1)
+                djamal_command_str = match.group(1)
                 current_directory = os.getcwd()
-                djamal_command = djamal_command.replace("${PWD}", current_directory)
-                subprocess.run(f"{djamal_command} {command_string}", shell=True)
+                djamal_command_str = djamal_command_str.replace("${PWD}", current_directory)
+                full_command = f"{djamal_command_str} {djamal_command}"
+                if optional_args:
+                    full_command += " " + " ".join(optional_args)
+                return full_command
             else:
                 self.add_alias()
-                self.execute_djamal_command_if_alias_exists(command_string)
-
+                return None
 
     def get_env_file_path(self):
         current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -139,3 +122,4 @@ Options:
             self.stdout.write(f"The version number is: {version}")
         except pkg_resources.DistributionNotFound:
             self.stdout.write("Package not found.")
+
