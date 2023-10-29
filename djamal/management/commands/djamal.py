@@ -4,8 +4,9 @@ import re
 import subprocess
 import shlex
 import pkg_resources
+from argparse import REMAINDER
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 
 class Command(BaseCommand):
@@ -13,10 +14,29 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("command", nargs="+", type=str, help="Specify the command to execute")
+        parser.add_argument("--verbose", action="store_true", help="Detailed logging")
+        parser.add_argument("--quiet", action="store_true", help="Minimal logging")
+        parser.add_argument("--app-version", type=str, dest="app_version", help="Run commands against a specific app version")
+        parser.add_argument("--primary", action="store_true", help="Run commands only on primary host instead of all")
+        parser.add_argument("--hosts", type=str, help="Run commands on these hosts instead of all (separate by comma)")
+        parser.add_argument("--roles", type=str, help="Run commands on these roles instead of all (separate by comma)")
+        parser.add_argument("--config-file", type=str, help="Path to config file", default="config/deploy.yml")
+        parser.add_argument("--destination", type=str, help="Specify destination to be used for config file (staging -> deploy.staging.yml)")
+        parser.add_argument("--skip-hooks", action="store_true", help="Don't run hooks")
 
     def handle(self, *args, **options):
-        command_list = options["command"]
+        command_list = options.pop("command")
         command = command_list.pop(0)
+        verbose = options.pop("verbose")
+        quiet = options.pop("quiet")
+        app_version = options.pop("app_version")
+        primary = options.pop("primary")
+        hosts = options.pop("hosts")
+        roles = options.pop("roles")
+        config_file = options.pop("config_file")
+        destination = options.pop("destination")
+        skip_hooks = options.pop("skip_hooks")
+
         if command == "add_alias":
             self.add_alias()
         elif command == "help":
@@ -24,7 +44,7 @@ class Command(BaseCommand):
         elif command == "version":
             self.print_version()
         else:
-            self.execute_djamal_command_if_alias_exists(command, command_list)
+            self.execute_djamal_command_if_alias_exists(command, command_list, verbose, quiet, app_version, primary, hosts, roles, config_file, destination, skip_hooks)
 
     def add_alias(self):
         alias_command = (
@@ -39,11 +59,12 @@ class Command(BaseCommand):
         with open(env_file_path, "a") as env_file:
             env_file.write(alias_command)
 
-    def execute_djamal_command_if_alias_exists(self, djamal_command, optional_args):
-        full_command = self.construct_full_command(djamal_command, optional_args)
-        subprocess.run(full_command, shell=True)
+    def execute_djamal_command_if_alias_exists(self, djamal_command, optional_args, verbose, quiet, app_version, primary, hosts, roles, config_file, destination, skip_hooks):
+        full_command = self.construct_full_command(djamal_command, optional_args, verbose, quiet, app_version, primary, hosts, roles, config_file, destination, skip_hooks)
+        if full_command:
+            subprocess.run(full_command, shell=True)
 
-    def construct_full_command(self, djamal_command, optional_args):
+    def construct_full_command(self, djamal_command, optional_args, verbose, quiet, app_version, primary, hosts, roles, config_file, destination, skip_hooks):
         env_file_path = self.get_env_file_path()
         with open(env_file_path, "r") as env_file:
             content = env_file.read()
@@ -56,6 +77,24 @@ class Command(BaseCommand):
                 full_command = f"{djamal_command_str} {djamal_command}"
                 if optional_args:
                     full_command += " " + " ".join(optional_args)
+                if verbose:
+                    full_command += " --verbose"
+                if quiet:
+                    full_command += " --quiet"
+                if app_version:
+                    full_command += f" --version={app_version}"
+                if primary:
+                    full_command += " --primary"
+                if hosts:
+                    full_command += f" --hosts={hosts}"
+                if roles:
+                    full_command += f" --roles={roles}"
+                if config_file:
+                    full_command += f" --config-file={config_file}"
+                if destination:
+                    full_command += f" --destination={destination}"
+                if skip_hooks:
+                    full_command += " --skip-hooks"
                 return full_command
             else:
                 self.add_alias()
@@ -73,7 +112,6 @@ class Command(BaseCommand):
             with open(env_file_path, "w") as env_file:
                 pass
         return env_file_path
-
 
     def print_help_text(self):
         help_text = """
@@ -112,7 +150,6 @@ Options:
                                          # Default: config/deploy.yml
   -d, [--destination=DESTINATION]        # Specify destination to be used for config file (staging -> deploy.staging.yml)
   -H, [--skip-hooks], [--no-skip-hooks]  # Don't run hooks
-                                         # Default: false
 """
         self.stdout.write(help_text)
 
