@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.poetry]
+name = "djamal"
+version = "0.1.1"
+description = "A Django extension to deploy web apps anywhere, from bare metal to cloud VMs."
+authors = ["Ehigie (Pystar) Aito <aitoehigie@gmail.com>"]
+readme = "djamal/README.md"
+repository = "https://github.com/aitoehigie/djamal"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.6"
+
+[tool.poetry.scripts]
+djamal = "djamal.management.commands.djamal:Command"

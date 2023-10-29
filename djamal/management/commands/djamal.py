@@ -82,6 +82,7 @@ class Command(BaseCommand):
                     "djamal alias command not found in the environment file."
                 )
 
+
     def get_env_file_path(self):
         current_directory = os.path.dirname(os.path.abspath(__file__))
         possible_env_files = [".env", ".venv"]
