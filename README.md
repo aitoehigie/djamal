@@ -4,34 +4,33 @@ The Django Kamal Extension adds the 'djamal' alias command to the .env file in t
 
 ## Installation
 
-Install the Django Kamal Extension using pip:
+Install djamal using pip:
 
 ```bash
 python -m pip install djamal
 
 
 # Usage
-Add 'django_kamal_extension' to your Django project's INSTALLED_APPS and 'django_kamal_extension.middleware.Command' to the MIDDLEWARE:
+Add 'djamal' to your Django project's INSTALLED_APPS and 'djamal.middleware.Command' to the MIDDLEWARE:
 
 # settings.py
 
 INSTALLED_APPS = [
     # ...
-    'django_kamal_extension',
+    'djamal',
     # ...
 ]
 
 MIDDLEWARE = [
     # ...
-    'django_kamal_extension.middleware.Command',
+    'djamal.middleware.Command',
     # ...
 ]
 
-## To add the 'kamal' alias command to the .env file, run the following Django management command:
+## To view the list of djamal commands and options, run the following Django management command:
 ```bash
-python manage.py djamal add_alias
+python manage.py djamal help
 
-## This will append the necessary command to the .env file, enabling you to run the 'djamal' command within your Django project.
 
 # License
 This project is licensed under the MIT License - see the LICENSE file for details.

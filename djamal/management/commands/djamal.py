@@ -2,6 +2,7 @@ from __future__ import annotations
 import os
 import re
 import subprocess
+import shlex
 import pkg_resources
 
 from django.core.management.base import BaseCommand
@@ -61,7 +62,6 @@ class Command(BaseCommand):
         with open(env_file_path, "a") as env_file:
             env_file.write(alias_command)
 
-
     def execute_djamal_command_if_alias_exists(self, command_string):
         env_file_path = self.get_env_file_path()
         with open(env_file_path, "r") as env_file:
@@ -88,7 +88,7 @@ class Command(BaseCommand):
         env_file_path = os.path.join(current_directory, ".env")
         if not os.path.exists(env_file_path):
             with open(env_file_path, "w") as env_file:
-                pass  # You can write default content to the file if needed
+                pass
         return env_file_path
 
 
