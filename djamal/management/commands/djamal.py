@@ -60,11 +60,7 @@ class Command(BaseCommand):
         env_file_path = self.get_env_file_path()
         with open(env_file_path, "a") as env_file:
             env_file.write(alias_command)
-        self.stdout.write(
-            self.style.SUCCESS(
-                "Alias command added to the environmental file successfully."
-            )
-        )
+
 
     def execute_djamal_command_if_alias_exists(self, command_string):
         env_file_path = self.get_env_file_path()
@@ -78,18 +74,23 @@ class Command(BaseCommand):
                 djamal_command = djamal_command.replace("${PWD}", current_directory)
                 subprocess.run(f"{djamal_command} {command_string}", shell=True)
             else:
-                self.stdout.write(
-                    "djamal alias command not found in the environment file."
-                )
+                self.add_alias()
+                self.execute_djamal_command_if_alias_exists(command_string)
 
 
     def get_env_file_path(self):
         current_directory = os.path.dirname(os.path.abspath(__file__))
         possible_env_files = [".env", ".venv"]
         for file in possible_env_files:
-            if os.path.exists(os.path.join(current_directory, file)):
-                return os.path.join(current_directory, file)
-        return os.path.join(current_directory, ".env")
+            file_path = os.path.join(current_directory, file)
+            if os.path.exists(file_path):
+                return file_path
+        env_file_path = os.path.join(current_directory, ".env")
+        if not os.path.exists(env_file_path):
+            with open(env_file_path, "w") as env_file:
+                pass  # You can write default content to the file if needed
+        return env_file_path
+
 
     def print_help_text(self):
         help_text = """
