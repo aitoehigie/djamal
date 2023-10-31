@@ -26,6 +26,7 @@ MIDDLEWARE = [
     'djamal.middleware.Command',
     # ...
 ]
+```
 
 ## To view the list of djamal commands and options, run the following Django management command:
 ```bash
