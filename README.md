@@ -33,6 +33,10 @@ MIDDLEWARE = [
 
 ## Commands and options
  To view the list of djamal commands and options, run the following Django management command:
+ ```bash
+python manage.py djamal help
+```
+
  ```yaml
  Commands:
   djamal accessory           # Manage accessories (db/redis/search)
@@ -69,10 +73,6 @@ Options:
                                          # Default: config/deploy.yml
   -d, [--destination=DESTINATION]        # Specify destination to be used for config file (staging -> deploy.staging.yml)
   -H, [--skip-hooks], [--no-skip-hooks]  # Don't run hooks
-```
- 
-```bash
-python manage.py djamal help
 ```
 
 ## Setting up a project
