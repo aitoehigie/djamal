@@ -28,7 +28,9 @@ MIDDLEWARE = [
 ]
 ```
 
-## To view the list of djamal commands and options, run the following Django management command:
+## Commands and options
+ To view the list of djamal commands and options, run the following Django management command:
+ 
 ```bash
 python manage.py djamal help
 ```
@@ -36,7 +38,7 @@ python manage.py djamal help
 ## Setting up a project
 Change into your Django app directory, and run the command 
 ```bash
-djamal init. 
+djamal init
 ```
 
 Now edit the new file config/deploy.yml. It could look as simple as this:
@@ -60,6 +62,7 @@ Then edit your .env file to add your registry password as DJAMAL_REGISTRY_PASSWO
 Now you’re ready to deploy to the servers by running this command:
 ```bash
 djamal setup
+```
 
 This command will:
 
@@ -76,7 +79,7 @@ This command will:
 - Stop the old container running the previous version of the app.
 - Prune unused images and stopped containers to ensure servers don’t fill up.
 - Now all the servers are now serving the app on port 80. If you’re just running a single server, you’re ready to go. If you’re running multiple servers, you need to put a load balancer in front of them. For subsequent deploys, or if your servers already have Docker and curl installed, you can just run djamal deploy.
-```
+
 
 # License
 This project is licensed under the MIT License - see the LICENSE file for details.
