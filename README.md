@@ -8,7 +8,7 @@ This Django extension allows you deploy web apps anywhere from bare metal to clo
 Install djamal using pip:
 
 ```bash
-python -m pip install djamal
+pip install djamal
 ```
 
 

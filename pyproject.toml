@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.poetry]
 name = "djamal"
-version = "0.1.13"
+version = "0.1.14"
 description = "A Django extension to deploy web apps anywhere, from bare metal to cloud VMs."
 authors = ["Ehigie (Pystar) Aito <aitoehigie@gmail.com>"]
 readme = "README.md"
