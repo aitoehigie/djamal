@@ -1,6 +1,6 @@
 # Djamal: A Django Extension for [Kamal](https://github.com/basecamp/kamal)
 
-This Django Extension allows you deploy web apps anywhere from bare metal to cloud VMs, deploy web apps anywhere with zero downtime using [Kamal](From bare metal to cloud VMs, deploy web apps anywhere with zero downtime.) from within your Django project.
+This Django extension allows you deploy web apps anywhere from bare metal to cloud VMs, with zero downtime using [Kamal](https://github.com/basecamp/kamal)) from within your Django project.
 
 
 ## Installation
