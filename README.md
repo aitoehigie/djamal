@@ -12,7 +12,7 @@ python -m pip install djamal
 ```
 
 
-##Usage
+## Usage
 Add 'djamal' to your Django project's INSTALLED_APPS and 'djamal.middleware.Command' to the MIDDLEWARE:
 
 settings.py
