@@ -1,6 +1,7 @@
-# Djamal: A Django Kamal Extension
+# Djamal: A Django Extension for [Kamal](https://github.com/basecamp/kamal)
 
-The Django Kamal Extension adds the 'djamal' alias command to the .env file in the root of the Django project. The extension Deploy web apps anywhere from bare metal to cloud VMs. within your Django project.
+This Django Extension allows you deploy web apps anywhere from bare metal to cloud VMs, deploy web apps anywhere with zero downtime using [Kamal](From bare metal to cloud VMs, deploy web apps anywhere with zero downtime.) from within your Django project.
+
 
 ## Installation
 
