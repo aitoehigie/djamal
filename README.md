@@ -9,13 +9,14 @@ Install djamal using pip:
 
 ```bash
 python -m pip install djamal
+```
 
 
 # Usage
 Add 'djamal' to your Django project's INSTALLED_APPS and 'djamal.middleware.Command' to the MIDDLEWARE:
 
 # settings.py
-
+```yaml
 INSTALLED_APPS = [
     # ...
     'djamal',
